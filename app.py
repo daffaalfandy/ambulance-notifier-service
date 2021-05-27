@@ -118,6 +118,18 @@ def login_user():
 
     return make_response(jsonify({'email': email, 'password': password}))
 
+# Ambulance endpoint
+@app.route('/api/ambulance/<id>', methods=['GET'])
+def get_ambulance(id):
+    ambulance = Ambulance.query.get(id)    
+    return make_response(jsonify({
+        'id_ambulance': ambulance.id_ambulance,
+        'type': ambulance.ambulance_type,
+        'status': ambulance.ambulance_status,
+        'origin': ambulance.ambulance_origin,
+        'license_plate': ambulance.license_plate
+    }), 200)
+
 # Run server
 if __name__ == "__main__":
     app.run(debug=True)
