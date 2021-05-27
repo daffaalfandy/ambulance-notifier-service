@@ -56,7 +56,7 @@ class UserSchema(ModelSchema):
 def store_user():
     data = request.get_json()
 
-    pw_hash = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+    pw_hash = bcrypt.hashpw(data['password'].encode('utf8'), bcrypt.gensalt())
     data['password'] = pw_hash
 
     user_schema = UserSchema()
@@ -64,6 +64,35 @@ def store_user():
     result = user_schema.dump(user.create())
     result['password'] = None
     return make_response(jsonify({'success': 1, 'result': result}), 200)
+
+@app.route('/api/user/login', methods=['POST'])
+def login_user():
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
+
+    if not email:
+        return make_response(jsonify({'success': 0, 'msg': 'Missing email!'}), 400)
+    if not password:
+        return make_response(jsonify({'success': 0, 'msg': 'Missing password!'}), 400)
+
+    user = User.query.filter_by(email=email).first()    
+    
+    if not user:
+        return make_response(jsonify({'success': 0, 'msg': 'Email not found!'}), 404)
+
+    if bcrypt.checkpw(password.encode('utf8'), user.password.encode('utf8')):
+        return make_response(jsonify({
+            'success': 1,
+            'msg': 'Login Successful',
+            'user': {
+                'email': user.email,
+                'fullname': user.fullname
+            }
+        }), 200)
+    else:
+        return make_response(jsonify({'success': 0, 'msg': 'Wrong password!'}), 400)
+
+    return make_response(jsonify({'email': email, 'password': password}))
 
 # Run server
 if __name__ == "__main__":
