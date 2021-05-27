@@ -39,6 +39,20 @@ class User(db.Model):
         db.session.add(self)
         db.session.commit()
         return self
+# Ambulance Model
+class Ambulance(db.Model):
+    __tablename__ = "ambulances"
+    id_ambulance = db.Column(db.Integer, primary_key=True)
+    ambulance_type = db.Column(db.String(255))
+    ambulance_status = db.Column(db.Integer)
+    ambulance_origin = db.Column(db.String())
+    license_plate = db.Column(db.String(100))
+
+    def __init__(self, ambulance_type, ambulance_status, ambulance_origin, license_plate):
+        self.ambulance_type = ambulance_type
+        self.ambulance_origin = ambulance_origin
+        self.ambulance_status = ambulance_status
+        self.license_plate = license_plate
 
 # User Schema
 class UserSchema(ModelSchema):
@@ -50,6 +64,16 @@ class UserSchema(ModelSchema):
     fullname = fields.String(required=True)
     email = fields.String(required=True)
     password = fields.String(required=True)
+# Ambulance Schema
+class AmbulanceSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
+        model = Ambulance
+        sqla_session = db.session
+    id_ambulance = fields.Number(dump_only=True)
+    ambulance_type = fields.String(required=True)
+    ambulance_status = fields.Integer(required=True)
+    ambulance_origin = fields.String(required=True)
+    license_plate = fields.String(required=True)
 
 # User endpoint
 @app.route('/api/user', methods=['POST'])
