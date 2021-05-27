@@ -1,0 +1,2 @@
+# mysql+pymysql://<username>:<password>@localhost: <database port>/<database name>
+DATABASE_URI=mysql+pymysql://root:@localhost:3306/ambulance_notifier
