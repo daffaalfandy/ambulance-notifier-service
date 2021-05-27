@@ -130,6 +130,25 @@ def get_ambulance(id):
         'license_plate': ambulance.license_plate
     }), 200)
 
+@app.route('/api/ambulance/<id>', methods=['PUT'])
+def update_ambulance_status(id):
+    status = int(request.json['status'])
+    ambulance = Ambulance.query.get(id)
+
+    if not ambulance:
+        return make_response(jsonify({'success': 0, 'msg': 'Ambulance not found!'}), 404)
+    
+    ambulance.ambulance_status = status
+    db.session.commit()
+
+    return make_response(jsonify({
+        'id_ambulance': ambulance.id_ambulance,
+        'type': ambulance.ambulance_type,
+        'status': ambulance.ambulance_status,
+        'origin': ambulance.ambulance_origin,
+        'license_plate': ambulance.license_plate
+    }), 200)
+
 # Run server
 if __name__ == "__main__":
     app.run(debug=True)
