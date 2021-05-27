@@ -11,6 +11,7 @@ marshmallow-sqlalchemy = "*"
 python-dotenv = "*"
 bcrypt = "*"
 pymysql = "*"
+gunicorn = "*"
 
 [dev-packages]
 
