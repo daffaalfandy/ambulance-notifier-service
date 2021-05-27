@@ -8,6 +8,9 @@ flask = "*"
 flask-sqlalchemy = "*"
 flask-marshmallow = "*"
 marshmallow-sqlalchemy = "*"
+python-dotenv = "*"
+bcrypt = "*"
+pymysql = "*"
 
 [dev-packages]
 
