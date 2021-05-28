@@ -29,11 +29,13 @@ class User(db.Model):
     fullname = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+    role = db.Column(db.Integer)
 
-    def __init__(self, fullname, email, password):
+    def __init__(self, fullname, email, password, role):
         self.fullname = fullname
         self.email = email
         self.password = password
+        self.role = role
     
     def create(self):
         db.session.add(self)
@@ -68,6 +70,7 @@ class UserSchema(ModelSchema):
     fullname = fields.String(required=True)
     email = fields.String(required=True)
     password = fields.String(required=True)
+    role = fields.Number(required=True)
 # Ambulance Schema
 class AmbulanceSchema(ModelSchema):
     class Meta(ModelSchema.Meta):
@@ -78,6 +81,8 @@ class AmbulanceSchema(ModelSchema):
     ambulance_status = fields.Integer(required=True)
     ambulance_origin = fields.String(required=True)
     license_plate = fields.String(required=True)
+    latitude = fields.String(required=True)
+    longitude = fields.String(required=True)
 
 # User endpoint
 @app.route('/api/user', methods=['POST'])
@@ -114,7 +119,8 @@ def login_user():
             'msg': 'Login Successful',
             'user': {
                 'email': user.email,
-                'fullname': user.fullname
+                'fullname': user.fullname,
+                'role': user.role
             }
         }), 200)
     else:
@@ -159,4 +165,8 @@ def update_ambulance_status(id):
 
 # Run server
 if __name__ == "__main__":
-    app.run(debug=True)
+    if os.environ.get('FLASK_ENV') == 'production':
+        app.run(debug=False, host='0.0.0.0')
+    else:
+        app.run(debug=True)
+        
