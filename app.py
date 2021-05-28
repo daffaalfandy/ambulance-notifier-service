@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_socketio import SocketIO, emit
 from dotenv import load_dotenv
 from marshmallow import fields  #serialize python object
 from marshmallow_sqlalchemy import ModelSchema  #serialize python object
@@ -15,6 +16,10 @@ app = Flask(__name__)
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')  #for socketio
+
+# Init socketio
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 # Init database
 db = SQLAlchemy(app)
@@ -163,10 +168,25 @@ def update_ambulance_status(id):
         'longitude': ambulance.longitude
     }), 200)
 
+# Socketio
+@socketio.on('connect', namespace='/drive')
+def connected():
+    emit('status', {'status': 'Connected', 'success': 1})
+
+@socketio.on('disconnect', namespace='/drive')
+def disconnected():
+    emit('status', {'status': 'Disconnected', 'success': 0})
+
+@socketio.on('ambulance_location', namespace='/drive')
+def fwd_ambulance_location(data):    
+    emit('broadcast_ambulance_location', data, broadcast=True)
+
 # Run server
 if __name__ == "__main__":
     if os.environ.get('FLASK_ENV') == 'production':
-        app.run(debug=False, host='0.0.0.0')
+        # app.run(debug=False, host='0.0.0.0')
+        socketio.run(app, debug=False, host='0.0.0.0')
     else:
-        app.run(debug=True)
+        # app.run(debug=True)
+        socketio.run(app, debug=True)
         

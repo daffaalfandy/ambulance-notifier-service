@@ -106,3 +106,10 @@ Response: {
     "status": 0,
     "type": "APV2"
 }
+
+##Ambulance Location
+#Using socketio for connection#
+Endpoint: /drive
+When connected to this, listening on 'status', if connected msg will be {'status': 'Connected', 'success': 1}
+For ambulance driver, please emit on 'ambulance_location' with data required
+For common user, please listening on 'broadcast_ambulance_location', message will be same as data provided from ambulance driver
