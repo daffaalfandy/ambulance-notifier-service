@@ -47,12 +47,16 @@ class Ambulance(db.Model):
     ambulance_status = db.Column(db.Integer)
     ambulance_origin = db.Column(db.String())
     license_plate = db.Column(db.String(100))
+    latitude = db.Column(db.String(50))
+    longitude = db.Column(db.String(50))
 
-    def __init__(self, ambulance_type, ambulance_status, ambulance_origin, license_plate):
+    def __init__(self, ambulance_type, ambulance_status, ambulance_origin, license_plate, latitude, longitude):
         self.ambulance_type = ambulance_type
         self.ambulance_origin = ambulance_origin
         self.ambulance_status = ambulance_status
         self.license_plate = license_plate
+        self.latitude = latitude
+        self.longitude = longitude
 
 # User Schema
 class UserSchema(ModelSchema):
@@ -127,7 +131,9 @@ def get_ambulance(id):
         'type': ambulance.ambulance_type,
         'status': ambulance.ambulance_status,
         'origin': ambulance.ambulance_origin,
-        'license_plate': ambulance.license_plate
+        'license_plate': ambulance.license_plate,
+        'latitude': ambulance.latitude,
+        'longitude': ambulance.longitude
     }), 200)
 
 @app.route('/api/ambulance/<id>', methods=['PUT'])
@@ -146,7 +152,9 @@ def update_ambulance_status(id):
         'type': ambulance.ambulance_type,
         'status': ambulance.ambulance_status,
         'origin': ambulance.ambulance_origin,
-        'license_plate': ambulance.license_plate
+        'license_plate': ambulance.license_plate,
+        'latitude': ambulance.latitude,
+        'longitude': ambulance.longitude
     }), 200)
 
 # Run server
