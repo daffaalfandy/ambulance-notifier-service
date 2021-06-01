@@ -8,6 +8,12 @@ from marshmallow_sqlalchemy import ModelSchema  #serialize python object
 import os
 import bcrypt
 
+import tensorflow as tf
+import numpy as np
+import cv2
+from PIL import Image
+from skimage import transform
+
 load_dotenv('.env')
 
 # Init app
@@ -172,6 +178,54 @@ def update_ambulance_status(id):
 # @app.route('/api/ambulance/predict', methods=['POST'])
 def predict_process():
     # Code here
+    #loading the model
+    my_model = tf.keras.models.load_model('Model/TheATeam_model_ver2', compile=True)
+
+    #2 Load and pre-process image frames
+    def load_frames(frame):
+        frames = Image.open(frame)
+        frames = np.array(frames).astype('float32')/255
+        frames = transform.resize(frames, (224, 224, 3))
+        frames = np.expand_dims(frames, axis=0)
+        return frames
+    
+    #3 get video
+    vidcap = cv2.VideoCapture('Video Frames/testAmbulanceVideo.mp4')
+
+    #4 converting video into frame image (jpg format)
+    def getFrame(sec):
+        vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
+        hasFrames,image = vidcap.read()
+
+        if hasFrames:
+            # Specify frame path file
+            framePath = "Video Frames/"+str(count)+"_frame.jpg"
+            # save frame as JPG file
+            cv2.imwrite(framePath, image)
+            
+            # Predict Frame directly
+            image = load_frames(framePath)
+            result = my_model.predict(image)
+
+            # Print ambulance detected or not and probability value
+            print(str(count)+") Ambulance Detected: {}".format("%.3f" % result[0][1]) if result[0][1]>0.03 
+                else str(count)+") Ambulance not detected: {}".format("%.3f" % result[0][1]))
+
+        return hasFrames
+
+    sec = 0
+    frameRate = 5 # Capture image in second
+    count=1
+    success = getFrame(sec) # Initial function to get the frame and predict frame
+
+    # Looping the function to get the frame and predict frame directly
+    while success:
+        count = count + 1
+        sec = sec + frameRate
+        sec = round(sec, 2)
+        success = getFrame(sec)
+    
+    return 
 
 # Socketio
 @socketio.on('connect', namespace='/drive')
