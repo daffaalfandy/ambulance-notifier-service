@@ -6,7 +6,9 @@ from dotenv import load_dotenv
 from marshmallow import fields  #serialize python object
 from marshmallow_sqlalchemy import ModelSchema  #serialize python object
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import bcrypt
+import json
 
 import tensorflow as tf
 import numpy as np
@@ -25,7 +27,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('APP_SECRET_KEY')  #for socketio
 
 # Init socketio
-socketio = SocketIO(app, cors_allowed_origins='*')
+socketio = SocketIO(app, cors_allowed_origins='*', cors_credentials=False)
 
 # Init database
 db = SQLAlchemy(app)
@@ -179,7 +181,7 @@ def update_ambulance_status(id):
 def predict_process():
     # Code here
     #loading the model
-    my_model = tf.keras.models.load_model('Model/TheATeam_model_ver2', compile=True)
+    my_model = tf.keras.models.load_model('./TheATeam_model_ver2.h5', compile=True)
 
     #2 Load and pre-process image frames
     def load_frames(frame):
@@ -190,7 +192,7 @@ def predict_process():
         return frames
     
     #3 get video
-    vidcap = cv2.VideoCapture('Video Frames/testAmbulanceVideo.mp4')
+    vidcap = cv2.VideoCapture('../ambulance.mp4')
 
     #4 converting video into frame image (jpg format)
     def getFrame(sec):
@@ -199,7 +201,7 @@ def predict_process():
 
         if hasFrames:
             # Specify frame path file
-            framePath = "Video Frames/"+str(count)+"_frame.jpg"
+            framePath = "../video-frames/"+str(count)+"_frame.jpg"
             # save frame as JPG file
             cv2.imwrite(framePath, image)
             
@@ -208,8 +210,14 @@ def predict_process():
             result = my_model.predict(image)
 
             # Print ambulance detected or not and probability value
-            print(str(count)+") Ambulance Detected: {}".format("%.3f" % result[0][1]) if result[0][1]>0.03 
-                else str(count)+") Ambulance not detected: {}".format("%.3f" % result[0][1]))
+            # predict_result = (str(count)+") Ambulance Detected: {}".format("%.3f" % result[0][1]) if result[0][1]>0.03 
+            #     else str(count)+") Ambulance not detected: {}".format("%.3f" % result[0][1]))
+            predict_result = {
+                "ambulance_detected": 1 if result[0][1] > 0.03 else 0,
+                "frame_number": count,
+                "precentage": "{}".format("%.3f" % result[0][1])
+            }
+            emit('predict_result', json.dumps(predict_result), broadcast=True)
 
         return hasFrames
 
@@ -224,25 +232,26 @@ def predict_process():
         sec = sec + frameRate
         sec = round(sec, 2)
         success = getFrame(sec)
-    
-    return 
+        
 
 # Socketio
-@socketio.on('connect', namespace='/drive')
-def connected():
-    emit('status', {'status': 'Connected', 'success': 1})
+# @socketio.on('connect', namespace='/drive')
+# def connected():
+#     emit('status', {'status': 'Connected', 'success': 1})
 
-@socketio.on('disconnect', namespace='/drive')
-def disconnected():
-    emit('status', {'status': 'Disconnected', 'success': 0})
+# @socketio.on('disconnect', namespace='/drive')
+# def disconnected():
+#     emit('status', {'status': 'Disconnected', 'success': 0})
 
 @socketio.on('ambulance_location', namespace='/drive')
 def fwd_ambulance_location(data):    
     emit('broadcast_ambulance_location', data, broadcast=True)
 
 @socketio.on('predict')
-def predict():
-    data = predict_process()
+def predict(data):
+    emit('predict_result', 'Predict Start', broadcast=True)
+    predict_process()        
+    emit('predict_result', 'Predict End', broadcast=True)
 
 
 
