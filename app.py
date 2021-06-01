@@ -168,6 +168,11 @@ def update_ambulance_status(id):
         'longitude': ambulance.longitude
     }), 200)
 
+# Machine Learning
+# @app.route('/api/ambulance/predict', methods=['POST'])
+def predict_process():
+    # Code here
+
 # Socketio
 @socketio.on('connect', namespace='/drive')
 def connected():
@@ -180,6 +185,12 @@ def disconnected():
 @socketio.on('ambulance_location', namespace='/drive')
 def fwd_ambulance_location(data):    
     emit('broadcast_ambulance_location', data, broadcast=True)
+
+@socketio.on('predict')
+def predict():
+    data = predict_process()
+
+
 
 # Run server
 if __name__ == "__main__":

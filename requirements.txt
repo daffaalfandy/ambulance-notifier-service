@@ -24,3 +24,8 @@ six==1.16.0
 SQLAlchemy==1.4.17
 Werkzeug==2.0.1
 wsproto==1.0.0
+opencv-python==4.5.2.52
+tensorflow==2.5.0
+pytube==10.8.3
+scikit-image==0.18.1
+pillow==8.2.0
