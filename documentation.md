@@ -133,8 +133,8 @@ Response: {
 ### Using socketio for connection
 
 Endpoint: /socket.io
-When connected to this, listening on 'status', if connected msg will be {'status': 'Connected', 'success': 1}
-For ambulance driver, please emit on 'ambulance_location' with data required
+When connected to this, listening on 'status', if connected msg will be {'status': 'Connected', 'success': 1}  
+For ambulance driver, please emit on 'ambulance_location' with data required  
 For common user, please listening on 'broadcast_ambulance_location', message will be same as data provided from ambulance driver
 
 ## Running machine learning.

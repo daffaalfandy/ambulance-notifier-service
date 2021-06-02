@@ -1,10 +1,11 @@
 # Ambulance Notifier RESTful API
 
-This application is backend service for serving [Ambulance Notifier App](https://gitlab.com/musthofaammar/ambulance-notifier), capstone project for BANGKIT 2021. This service was built using Flask.
+This application is backend service for serving [Ambulance Notifier App](https://gitlab.com/musthofaammar/ambulance-notifier), capstone project for BANGKIT 2021.  
+This service was built using Flask.
 
 ## Installing application
 
-**\*Make sure using Python 3.9.\*\***
+**Make sure using Python 3.9.\***
 
 - First download or clone this repository.
 
@@ -19,13 +20,13 @@ curl -LO https://github.com/daffaalfandy/ambulance-notifier-service/archive/refs
 cd [application_directory]
 ```
 
-If you have create virtual environment
+> If you have create virtual environment
 
 ```
 pip install -r requirements.txt
 ```
 
-Else
+> Else
 
 ```
 pip install virtualenv
@@ -36,8 +37,8 @@ pip install -r requirements.txt
 
 - Create and import database. **SQL**
 
-  > Create database with your desired name.
-  > Import table from ambulance_notifier.sql
+  > Create database with your desired name.  
+  > Import table from ambulance_notifier.sql.
 
 - Make copy env file.
 
