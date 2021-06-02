@@ -54,7 +54,8 @@ cp env .env
 python app.py
 ```
 
-**Deploying Application**
+## Deploying Application
+
 For deployment please refer from this [Article](https://dev.to/brandonwallace/deploy-flask-the-easy-way-with-gunicorn-and-nginx-jgc)
 
 > Change ExecStart in systemd config to this command
