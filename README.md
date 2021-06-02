@@ -1,6 +1,6 @@
 # Ambulance Notifier RESTful API
 
-This application is backend service for serving **Ambulance Notifier App**, capstone project for BANGKIT 2021. This service was built using Flask.
+This application is backend service for serving [Ambulance Notifier App](https://gitlab.com/musthofaammar/ambulance-notifier), capstone project for BANGKIT 2021. This service was built using Flask.
 
 ## Installing application
 
