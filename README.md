@@ -98,6 +98,6 @@ Please refer to this [Documentation](https://github.com/daffaalfandy/ambulance-n
 Thanks to:
 
 - [Nanditya Nuswatama](https://github.com/NandityaNuswatama) as Designer and Mobile Developer.
-- [Ammar](https://github.com/musthofaammar) as Mobile Developer.
-- [Nicholas Nanda](), and [Emanuella Wintari](https://github.com/Imanuella74/) as Machine Learning Engineer.
+- [Musthoffa Ammar](https://github.com/musthofaammar) as Mobile Developer.
+- [Nicholas Nanda](https://github.com/hujikol), and [Emanuella Wintari](https://github.com/Imanuella74/) as Machine Learning Engineer.
 - [Natalia Syafitri](https://www.linkedin.com/in/natalia-syafitri-kustanto/) as as non technical team member.
